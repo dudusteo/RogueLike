@@ -3,12 +3,14 @@ using System;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
 using System.Linq;
-public class LevelGenerator : MonoBehaviour
+using UnityEngine.Tilemaps;
+public class GridManager : MonoBehaviour
 {
 
-    public GameObject floorTile;
-    public GameObject wallTile;
-    GameObject root;
+    public TileBase floorTile;
+    public TileBase wallTile;
+
+    public Tilemap tilemap;
 
     private List<RectInt> roomRects = new List<RectInt>();
 
@@ -21,7 +23,6 @@ public class LevelGenerator : MonoBehaviour
     public void SetupLevel(int level)
     {
         roomRects.Clear();
-        root = gameObject;
         rootRect = new RectInt(0, 0, 50, 50);
         SplitSpace(rootRect, splitIterations);
 
@@ -37,6 +38,8 @@ public class LevelGenerator : MonoBehaviour
         }
 
     }
+
+
 
     public Vector3 GetStartPosition()
     {
@@ -94,26 +97,26 @@ public class LevelGenerator : MonoBehaviour
 
         GameObject room = new GameObject("Room");
         room.transform.position = new Vector3(space.x, space.y, 0);
-        PopulateRoom(room, space);
+        PopulateRoom(space);
     }
 
-    private void PopulateRoom(GameObject parent, RectInt room)
+    private void PopulateRoom(RectInt room)
     {
         for (int x = room.x; x <= room.x + room.width; x++)
         {
             for (int y = room.y; y <= room.y + room.height; y++)
             {
-                GameObject instance;
+                Vector3Int tilePosition = new Vector3Int(x, y, 0);
                 if ((room.x == x) || (room.y == y) || (room.x + room.width == x) || (room.y + room.height == y))
                 {
-                    instance = Instantiate(wallTile, parent.transform);
+
+                    tilemap.SetTile(tilePosition, wallTile);
                 }
                 else
                 {
-                    instance = Instantiate(floorTile, parent.transform);
+                    tilemap.SetTile(tilePosition, floorTile);
 
                 }
-                instance.transform.position = new Vector3(x, y, 0);
             }
         }
     }
@@ -127,11 +130,10 @@ public class LevelGenerator : MonoBehaviour
 
         foreach (Vector2Int pos in path)
         {
-            GameObject instance = Instantiate(floorTile);
-            instance.transform.position = new Vector3(pos.x, pos.y, 0);
+            Vector3Int tilePosition = new Vector3Int(pos.x, pos.y, 0);
+            tilemap.SetTile(tilePosition, floorTile);
+
         }
-
-
     }
 
     List<Vector2Int> AStar(Vector2Int _current, Vector2Int _goal)

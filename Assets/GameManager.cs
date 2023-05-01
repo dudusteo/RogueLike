@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public LevelGenerator levelScript;
+    public GridManager levelScript;
     public GameObject player;
 
     void Awake()
     {
-        levelScript = GetComponent<LevelGenerator>();
+        levelScript = GetComponent<GridManager>();
         InitGame();
 
     }
