@@ -7,8 +7,11 @@ using UnityEngine.Tilemaps;
 public class GridManager : MonoBehaviour
 {
 
-    public TileBase floorTile;
-    public TileBase wallTile;
+    public Sprite floorSprite;
+    public Sprite wallSprite;
+
+    private Tile floorTile;
+    private Tile wallTile;
 
     public Tilemap tilemap;
 
@@ -22,8 +25,10 @@ public class GridManager : MonoBehaviour
 
     public void SetupLevel(int level)
     {
+
         roomRects.Clear();
         rootRect = new RectInt(0, 0, 50, 50);
+        setupTiles();
         SplitSpace(rootRect, splitIterations);
 
         RectInt prevRoom = roomRects[0];
@@ -40,12 +45,20 @@ public class GridManager : MonoBehaviour
     }
 
 
-
-    public Vector3 GetStartPosition()
+    public Vector3Int GetStartPosition()
     {
         int posX = roomRects[0].x + roomRects[0].width / 2;
         int posY = roomRects[0].y + roomRects[0].height / 2;
-        return new Vector3(posX, posY, 0);
+        return new Vector3Int(posX, posY, 0);
+    }
+
+    private void setupTiles()
+    {
+        floorTile = ScriptableObject.CreateInstance<Tile>(); ;
+        floorTile.sprite = floorSprite;
+
+        wallTile = ScriptableObject.CreateInstance<Tile>(); ;
+        wallTile.sprite = wallSprite;
     }
 
 
@@ -113,13 +126,15 @@ public class GridManager : MonoBehaviour
                     tilemap.SetTile(tilePosition, wallTile);
                 }
                 else
-                {
+
                     tilemap.SetTile(tilePosition, floorTile);
 
-                }
             }
         }
     }
+
+
+
 
     private void ConnectRooms(RectInt _start, RectInt _end)
     {
@@ -131,6 +146,7 @@ public class GridManager : MonoBehaviour
         foreach (Vector2Int pos in path)
         {
             Vector3Int tilePosition = new Vector3Int(pos.x, pos.y, 0);
+
             tilemap.SetTile(tilePosition, floorTile);
 
         }

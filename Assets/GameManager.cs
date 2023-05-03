@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class GameManager : MonoBehaviour
 {
     public GridManager levelScript;
     public GameObject player;
+
+    public Tilemap tilemap;
 
     void Awake()
     {
@@ -17,8 +20,8 @@ public class GameManager : MonoBehaviour
     void InitGame()
     {
         levelScript.SetupLevel(1);
-        GameObject player_instance = Instantiate(player);
-        player_instance.transform.position = levelScript.GetStartPosition();
+
+        player.transform.position = tilemap.GetCellCenterWorld(levelScript.GetStartPosition());
 
     }
 
