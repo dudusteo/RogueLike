@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class GameManager : MonoBehaviour
 {
-    public GridManager levelScript;
+    private GridManager levelScript;
     public GameObject player;
 
     public Tilemap tilemap;
