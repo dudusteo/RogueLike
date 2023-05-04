@@ -16,7 +16,8 @@ public class GridManager : MonoBehaviour
     private Tile floorTile;
     private Tile wallTile;
 
-    public Tilemap tilemap;
+    public Tilemap groundTilemap;
+    public Tilemap collisionTilemap;
 
     private List<RectInt> roomRects = new List<RectInt>();
 
@@ -126,18 +127,15 @@ public class GridManager : MonoBehaviour
                 if ((room.x == x) || (room.y == y) || (room.x + room.width == x) || (room.y + room.height == y))
                 {
 
-                    tilemap.SetTile(tilePosition, wallTile);
+                    collisionTilemap.SetTile(tilePosition, wallTile);
                 }
                 else
 
-                    tilemap.SetTile(tilePosition, floorTile);
+                    groundTilemap.SetTile(tilePosition, floorTile);
 
             }
         }
     }
-
-
-
 
     private void ConnectRooms(RectInt _start, RectInt _end)
     {
@@ -150,7 +148,7 @@ public class GridManager : MonoBehaviour
         {
             Vector3Int tilePosition = new Vector3Int(pos.x, pos.y, 0);
 
-            tilemap.SetTile(tilePosition, floorTile);
+            groundTilemap.SetTile(tilePosition, floorTile);
 
         }
     }

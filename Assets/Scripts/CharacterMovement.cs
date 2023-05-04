@@ -8,7 +8,7 @@ using System.Linq;
 public class CharacterMovement : MonoBehaviour
 {
 
-    public Tilemap map;
+    public Tilemap groundTilemap;
 
     public Camera mainCamera;
 
@@ -64,17 +64,17 @@ public class CharacterMovement : MonoBehaviour
         Vector2 mousePosition = mouseInput.Mouse.MousePosition.ReadValue<Vector2>();
         Vector3 mouseScreenPosition = new Vector3(mousePosition.x, mousePosition.y, -1f * Camera.main.transform.position.z);
         Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
-        Vector3Int gridPosition = map.WorldToCell(mouseWorldPosition);
+        Vector3Int gridPosition = groundTilemap.WorldToCell(mouseWorldPosition);
 
 
-        if (map.HasTile(gridPosition))
+        if (groundTilemap.HasTile(gridPosition))
         {
-            Vector3Int _current = map.WorldToCell(transform.position);
+            Vector3Int _current = groundTilemap.WorldToCell(transform.position);
             Vector2Int current = new Vector2Int(_current.x, _current.y);
 
             Vector2Int destination = new Vector2Int(gridPosition.x, gridPosition.y);
 
-            path = functionsScript.AStar(current, destination);
+            path = functionsScript.AStar(current, destination, groundTilemap);
             Debug.Log(destination);
             currentPathIndex = 0;
         }
