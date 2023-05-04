@@ -32,7 +32,7 @@ public class GridManager : MonoBehaviour
         functionsScript = GetComponent<Functions>();
         roomRects.Clear();
         rootRect = new RectInt(0, 0, 50, 50);
-        setupTiles();
+        SetupTiles();
         SplitSpace(rootRect, splitIterations);
 
         RectInt prevRoom = roomRects[0];
@@ -45,6 +45,7 @@ public class GridManager : MonoBehaviour
             prevRoom = room;
 
         }
+        SetupWalls();
 
     }
 
@@ -56,7 +57,7 @@ public class GridManager : MonoBehaviour
         return new Vector3Int(posX, posY, 0);
     }
 
-    private void setupTiles()
+    private void SetupTiles()
     {
         floorTile = ScriptableObject.CreateInstance<Tile>(); ;
         floorTile.sprite = floorSprite;
@@ -127,7 +128,7 @@ public class GridManager : MonoBehaviour
                 if ((room.x == x) || (room.y == y) || (room.x + room.width == x) || (room.y + room.height == y))
                 {
 
-                    collisionTilemap.SetTile(tilePosition, wallTile);
+                    //collisionTilemap.SetTile(tilePosition, wallTile);
                 }
                 else
 
@@ -135,6 +136,38 @@ public class GridManager : MonoBehaviour
 
             }
         }
+    }
+
+    private void SetupWalls()
+    {
+        BoundsInt bounds = groundTilemap.cellBounds;
+        for (int x = bounds.xMin - 1; x <= bounds.xMax + 1; x++)
+        {
+            for (int y = bounds.yMin - 1; y <= bounds.yMax + 1; y++)
+            {
+                Vector3Int pos = new Vector3Int(x, y, 0);
+                TileBase tile = groundTilemap.GetTile(pos);
+                if (tile != null)
+                {
+                    AddWallIfMissing(wallTile, pos);
+                }
+            }
+        }
+    }
+
+    private void AddWallIfMissing(TileBase wallTile, Vector3Int pos)
+    {
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                if (groundTilemap.GetTile(pos + new Vector3Int(x, y, 0)) == null)
+                {
+                    collisionTilemap.SetTile(pos + new Vector3Int(x, y, 0), wallTile);
+                }
+            }
+        }
+
     }
 
     private void ConnectRooms(RectInt _start, RectInt _end)
